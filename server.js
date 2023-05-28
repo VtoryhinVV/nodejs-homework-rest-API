@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const app = require("./app");
 
 const DB_HOST =
-  "mongodb+srv://Vladislav:aREhoSdKkM0fZSKB@cluster0.umuvmkc.mongodb.net/my_contacts?retryWrites=true&w=majority";
+  "mongodb+srv://Vladislav:tishka281009@cluster0.umuvmkc.mongodb.net/my_contacts?retryWrites=true&w=majority";
 mongoose
   .connect(DB_HOST)
   .then(() => {
