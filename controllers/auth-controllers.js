@@ -13,7 +13,7 @@ const register = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user) {
-    throw HttpError(409, "Email already in use");
+    throw HttpError(409, "Email in use");
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
@@ -21,8 +21,7 @@ const register = async (req, res) => {
   const newUser = await User.create({ ...req.body, password: hashPassword });
 
   res.status(201).json({
-    email: newUser.email,
-    name: newUser.name,
+    user: { email: newUser.email, subscription: newUser.subscription },
   });
 };
 
@@ -45,16 +44,17 @@ const login = async (req, res) => {
   await User.findByIdAndUpdate(user._id, { token });
 
   res.json({
-    token,
+    token: token,
+    user: { email: user.email, subscription: user.subscription },
   });
 };
 
 const getCurrent = async (req, res) => {
-  const { email, name } = req.user;
+  const { email, subscription } = req.user;
 
   res.json({
     email,
-    name,
+    subscription,
   });
 };
 
@@ -62,9 +62,22 @@ const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
 
-  res.json({
-    message: "Logout success",
-  });
+  res.status(204).json();
+};
+
+const updateSubscription = async (req, res) => {
+  const { subscription } = req.body;
+  const { _id } = req.user;
+
+  const user = await User.findByIdAndUpdate(
+    _id,
+    { subscription },
+    {
+      new: true,
+    }
+  );
+
+  res.status(200).json({ email: user.email, subscription: user.subscription });
 };
 
 module.exports = {
@@ -72,4 +85,5 @@ module.exports = {
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  updateSubscription: ctrlWrapper(updateSubscription),
 };

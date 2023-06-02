@@ -1,14 +1,17 @@
 const express = require("express");
 const contactsController = require("../../controllers/contact-controllers");
 const isValidId = require("../../middlewares/isValidId");
+const validFavoriteBody = require("../../middlewares/validFavorite");
+const authenticate = require("../../middlewares/authenticate");
 const {
   contactsAddSchema,
   updateFavoriteSchema,
 } = require("../../models/contact");
 const validateBody = require("../../decorators/validateBody");
-const validFavoriteBody = require("../../middlewares/validFavorite");
 
 const router = express.Router();
+
+router.use(authenticate);
 
 router.get("/", contactsController.getAllContacts);
 
