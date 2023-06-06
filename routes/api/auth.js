@@ -5,12 +5,13 @@ const ctrl = require("../../controllers/auth-controllers");
 const validBody = require("../../decorators/validateBody");
 const authenticate = require("../../middlewares/authenticate");
 const validSubscription = require("../../middlewares/validSubscription");
+const upload = require("../../middlewares/upload");
 
 const { schema } = require("../../models/user");
 
 const router = express.Router();
 
-router.post("/register", validBody(schema.registerSchema), ctrl.register);
+router.post("/register", ctrl.register);
 
 router.post("/login", validBody(schema.loginSchema), ctrl.login);
 
@@ -23,6 +24,13 @@ router.patch(
   authenticate,
   validSubscription(schema.updateSubscription),
   ctrl.updateSubscription
+);
+
+router.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatarURL"),
+  ctrl.uploadAvatar
 );
 
 module.exports = router;
