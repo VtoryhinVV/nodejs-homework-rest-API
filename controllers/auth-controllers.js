@@ -55,10 +55,10 @@ const register = async (req, res) => {
 };
 
 const verify = async (req, res) => {
-  const { verificationToken } = req.params;
+  const { verificationCode } = req.params;
 
-  const user = await User.findOne({ verificationToken });
-
+  const user = await User.findOne({ verificationCode });
+  
   if (!user) {
     throw HttpError(404, "User not found");
   }
